@@ -1,16 +1,14 @@
-import fetch from "node-fetch";
+const url = "https://script.google.com/macros/s/AKfycbw123xyz/exec"; // Ganti dengan URL Web App kamu
 
-export default async function handler(req, res) {
-  const url =
-    "https://script.google.com/macros/s/AKfycbwFK5_EolFfB34107pJHG44KuhFQRyp_HP21aIiXTHkYIZC8yZiXG2Oz49KyvdPOqdr/exec";
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200).json(data);
-  } catch (err) {
-    console.error("Fetch failed:", err);
-    res.status(500).json({ error: "Gagal mengambil data" });
-  }
-}
+fetch(url)
+  .then((response) => response.json())
+  .then((data) => {
+    document.getElementById("output").textContent = JSON.stringify(
+      data,
+      null,
+      2
+    );
+  })
+  .catch((error) => {
+    document.getElementById("output").textContent = "Error: " + error;
+  });
