@@ -13,11 +13,11 @@
       h1 {
         color: #333;
       }
-      #produk-list {
+      #output {
         list-style-type: none;
         padding: 0;
       }
-      #produk-list li {
+      #output li {
         padding: 10px;
         margin: 5px 0;
         background-color: #fff;
@@ -25,7 +25,7 @@
         border-radius: 4px;
         transition: background-color 0.3s;
       }
-      #produk-list li:hover {
+      #output li:hover {
         background-color: #f0f0f0;
       }
       .loading,
@@ -45,21 +45,26 @@
     <h1>Daftar Produk</h1>
     <div id="loading" class="loading">Memuat data...</div>
     <div id="error" class="error" style="display: none"></div>
-    <ul id="produk-list"></ul>
+    <ul id="output"></ul>
 
     <script>
-      async function loadProducts() {
-        const list = document.getElementById("produk-list");
+      const apiUrl = "https://apiku-six.vercel.app/api/get-sheet";
+
+      async function loadData() {
+        const output = document.getElementById("output");
         const loadingDiv = document.getElementById("loading");
         const errorDiv = document.getElementById("error");
+
+        if (!output || !loadingDiv || !errorDiv) {
+          console.error("Elemen HTML tidak ditemukan");
+          return;
+        }
 
         try {
           loadingDiv.style.display = "block";
           errorDiv.style.display = "none";
 
-          const response = await fetch(
-            "https://apiku-six.vercel.app/api/get-sheet"
-          );
+          const response = await fetch(apiUrl, { timeout: 10000 });
           if (!response.ok) {
             throw new Error(
               `Gagal memuat data: ${response.status} ${response.statusText}`
@@ -71,18 +76,24 @@
             throw new Error("Data bukan array: " + JSON.stringify(data));
           }
 
-          list.innerHTML = ""; // Kosongkan daftar sebelum menambahkan data baru
+          output.innerHTML = "";
+          if (data.length === 0) {
+            errorDiv.textContent = "Tidak ada data produk yang tersedia.";
+            errorDiv.style.display = "block";
+            return;
+          }
 
           data.forEach((item) => {
-            // Validasi properti
-            const nama = item.nama || item.Nama || "Produk Tidak Diketahui";
-            const harga = item.harga || item.Harga || 0;
+            // Adjust based on actual API response (e.g., nama_produk, harga_produk)
+            const nama =
+              item.nama_produk || item.nama || "Produk Tidak Diketahui";
+            const harga = item.harga_produk || item.harga || 0;
 
             const li = document.createElement("li");
             li.textContent = `${sanitizeText(nama)} - Rp${Number(
               harga
             ).toLocaleString("id-ID")}`;
-            list.appendChild(li);
+            output.appendChild(li);
           });
         } catch (error) {
           errorDiv.textContent = `Terjadi kesalahan: ${error.message}`;
@@ -92,15 +103,13 @@
         }
       }
 
-      // Fungsi untuk sanitasi teks
       function sanitizeText(str) {
         const div = document.createElement("div");
         div.textContent = str;
         return div.textContent;
       }
 
-      // Panggil fungsi saat halaman dimuat
-      window.onload = loadProducts;
+      window.onload = loadData;
     </script>
   </body>
 </html>
