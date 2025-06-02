@@ -1,4 +1,5 @@
-const url = "https://script.google.com/macros/s/AKfycbw123xyz/exec"; // Ganti dengan URL Web App kamu
+const url =
+  "https://script.google.com/macros/s/AKfycbwFK5_EolFfB34107pJHG44KuhFQRyp_HP21aIiXTHkYIZC8yZiXG2Oz49KyvdPOqdr/exec"; // Ganti dengan URL Web App kamu
 
 fetch(url)
   .then((response) => response.json())
