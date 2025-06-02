@@ -12,6 +12,9 @@
       fetch("https://apiku-six.vercel.app/api/get-sheet")
         .then((response) => response.json())
         .then((data) => {
+          if (!Array.isArray(data)) {
+            throw new Error("Data bukan array: " + JSON.stringify(data));
+          }
           const list = document.getElementById("produk-list");
           data.forEach((item) => {
             const li = document.createElement("li");

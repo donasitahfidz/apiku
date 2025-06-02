@@ -7,6 +7,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(200).json(data);
   } catch (err) {
+    console.error("Fetch failed:", err); // ✅ Debug error di logs Vercel
     res.status(500).json({ error: "Gagal mengambil data" });
   }
 }
